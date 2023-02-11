@@ -1,0 +1,314 @@
+class ColorEnum {
+    static RED = 'RED';
+    static BLACK= 'BLACK';
+    static GREEN = 'GREEN';
+    static ORANGE = 'ORANGE';
+    static YELLOW = 'YELLOW';
+    static BLUE = 'BLUE';
+    static PINK = 'PINK';
+};
+
+class Cell {
+    constructor(value, color) {
+        this.value = value;
+        this.color = color; 
+    }
+    setValue(str) {
+        this.value = '' + str;
+        return this;
+    }
+    setColor(color) {
+        return ColorEnum[color] ? this.color = color : "qo poxancac colory goyutyun chuni";
+    }
+    getValue() {
+        return this.value;
+    }
+    getColor() {
+        return this.color;
+    }
+    toInt() {
+        return Number.parseInt(this.value);
+    }
+    toDouble() {
+        const double = Number.parseFloat(this.value);
+        this.value = double;
+        return this;
+    }
+    toDate() {
+        const date = new Date(this.value);
+        return date.getDate() ? this.value = date : undefined;
+    }
+    reset() {
+        this.setColor('');
+        this.setValue('');
+        return this;
+    }
+
+}
+
+class Spreadsheet {
+    constructor(row, column) {
+        this.matrix = this.createMatrix(row, column);
+    }
+    createMatrix(row, column) {
+        const matrix = [];
+        for (let i = 0; i < row; ++i) {
+            matrix[i] = [];
+            for (let j = 0; j < column; ++j) {
+                matrix[i][j] = new Cell();
+            }
+        }
+        return matrix;
+    }
+    setCellAt(rowIndex, cellIndex, cellValue, cellColor) {
+        cellValue = cellValue ? cellValue : '';
+        cellColor = cellColor ? cellColor : null;
+        if (this.matrix[rowIndex]) {
+            if (this.matrix[rowIndex][cellIndex]) {
+              return this.matrix[rowIndex][cellIndex] = new Cell(cellValue, cellColor);
+            }
+            return 'matrixi row-um chka aydqan column';
+        } 
+        return 'matrixum chka ytenc row';
+
+    }
+    getCellAt(rowIndex, cellIndex) {
+        if (this.matrix[rowIndex]) {
+            if (this.matrix[rowIndex][cellIndex]) {
+              return this.matrix[rowIndex][cellIndex];
+            }
+            return 'matrixi row-um chka aydqan column';
+        } 
+        return 'matrixum chka ytenc row';
+    }
+    addRow() {
+        let arr = [];
+        for (let i = 0; i < this.matrix[0].length; ++i) {
+            arr.push(new Cell());
+        }
+        this.matrix.push(arr);
+        return this.matrix[this.matrix.length - 1];
+    }
+    
+    removeRow(index) {
+        if (this.matrix[index]) {
+            if (index >= 0) {
+                this.matrix.splice(index, 1);
+            }
+            return this.matrix;
+        }
+        return 'matrixum chka ytenc row';
+    }
+    
+    addColumn() {
+        for (let i = 0; i < this.matrix.length; ++i) {
+            this.matrix[i].push(new Cell());
+        }
+        return this.matrix;
+    }
+    
+    removeColumn() {
+        for (let i = 0; i < this.matrix.length; ++i) {
+            this.matrix[i].pop();
+        } 
+        return this.matrix;
+    }
+    swapRows(index1, index2) {
+        let tmp = this.matrix[index1];
+        if (this.matrix[index1] && this.matrix[index2] && index1 !== index2) {
+                this.matrix[index1] = this.matrix[index2];
+                this.matrix[index2] = tmp;
+            return this.matrix;
+        }
+        return `matrixum chka ytenc row uxxi ${index1} || ${index2}`;
+
+    }
+    swapColumns(rowIndex, index1, index2) {
+        if (this.matrix[rowIndex]) {
+            if (this.matrix[rowIndex][index1] && this.matrix[rowIndex][index2] && index1 !== index2) {
+                let tmp = this.matrix[rowIndex][index1];
+                this.matrix[ rowIndex][index1] = this.matrix[rowIndex][index2];
+                this.matrix[rowIndex][index2] = tmp;
+            return this.matrix;
+            }
+            return `matrixum chka ytenc column uxxi ${index1} || ${index2}`;
+        }
+        return `matrixum chka ytenc row`;
+    }
+}
+
+///////////////// Tests //////////////////Spreadsheet///////   
+
+const spreadsheet = new Spreadsheet(2, 3);
+// console.log(spreadsheet);
+function testSetCellAt(rowIndex, cellIndex, cellValue, cellColor) {
+    const testSetCell = spreadsheet.setCellAt(rowIndex, cellIndex, cellValue, cellColor);
+
+    return typeof testSetCell === 'string'? {
+        result: {},
+        errors: [testSetCell],
+        status: 'Failed'
+    } : {
+        result: testSetCell,
+        errors: [],
+        status: 'Created'
+    }
+}
+// console.log(testSetCellAt(1, 1, 22, ColorEnum.BLUE)); 
+
+function testGetCell(rowIndex, cellIndex) {
+    const testGetCellAt = spreadsheet.getCellAt(rowIndex, cellIndex);
+
+    return typeof testGetCellAt === 'string'? {
+        result: {},
+        errors: [testGetCellAt],
+        status: 'Failed'
+    } : {
+        result: testGetCellAt,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+
+// console.log(testGetCell(1,9))
+function testAddRow() {
+    const test = spreadsheet.addRow();
+
+    return {
+        result: test,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+// console.log(testAddRow());
+
+
+function testRemoveRow(rowIndex) {
+    const test = spreadsheet.removeRow(rowIndex);
+
+    return typeof test === 'string'? {
+        result: {},
+        errors: [test],
+        status: 'Failed'
+    } : {
+        result: test,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+
+// console.log(testRemoveRow(3)); 
+function testAddColumn() {
+    const test = spreadsheet.addColumn();
+
+    return {
+        result: test,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+
+// console.log(testAddColumn()); 
+function testRemoveColumn() {
+    const test = spreadsheet.removeColumn();
+
+    return {
+        result: test,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+
+// console.log(testRemoveColumn()); 
+function testSwapRows(index1, index2) {
+    const test = spreadsheet.swapRows(index1, index2)
+
+    return typeof test === 'string'? {
+        result: {},
+        errors: [test],
+        status: 'Failed'
+    } : {
+        result: test,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+// console.log(testSwapRows(1,1)); 
+function testSwapColumns(rowIndex, index1, index2) {
+    const test = spreadsheet.swapColumns(rowIndex, index1, index2)
+
+    return typeof test === 'string'? {
+        result: {},
+        errors: [test],
+        status: 'Failed'
+    } : {
+        result: test,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+
+// console.log(testSwapColumns(4,1,2)); 
+
+/////////////Tests//////Cell///////////
+
+const cell = new Cell("2022lekwjdl", ColorEnum.RED);
+console.log(cell);
+
+
+function testReset() {
+    const test = cell.reset();
+    return {
+        result: test,
+        errors: [],
+        status: 'Succsesfuly'
+    }
+}
+// console.log(testReset());// stugvac
+
+function testToDouble() {
+    //console.log(cell.value);
+    if (cell.value && cell.value % 1 !== 0) {
+        console.log("> Execution of function toDouble() test is successful");
+    } else {
+        console.log("> Execution of  function toDouble() test is fail");
+    }
+}
+// console.log(testToDouble());
+
+function testToInt() {
+    if (cell.value && cell.value % 1 === 0) {
+        console.log("> Execution of function toInt() test is successful");
+    } else {
+        console.log("> Execution of  function toInt() test is fail");
+    }
+}
+//console.log(testToInt());
+
+function testSetColor(color) {
+    const test = cell.setColor(color);
+    return ColorEnum[test] ? {
+        result: test,
+        errors: [],
+        status: "sccuessfuly"
+    } : {
+        result: "",
+        errors: [test],
+        status: "feild"
+    }
+}
+// console.log(testSetColor(ColorEnum.RED));
+
+function testToDate() {
+    const test = cell.toDate();
+    return typeof test !== 'undefined' ? {
+        result: test,
+        errors: [],
+        status: "sccuessfuly" 
+    } : {
+        result: "",
+        errors: ['error'],
+        status: "feild"
+    }
+}
+console.log(testToDate());
