@@ -137,7 +137,7 @@ class Spreadsheet {
     }
 }
   
-///////////////// Tests //////////////// Cell ///////    
+///////////////// Tests //////////////// Spreadsheet ///////    
 
 const spreadsheet = new Spreadsheet(2, 3); //spreadsheet object created 
 
@@ -251,6 +251,7 @@ function testSwapColumns(rowIndex, index1, index2) {
 // console.log(testSwapColumns(4,1,2)); 
 //verified 
 //----------------------------------------------------------------------------------------------------
+////////////Tests/////////Cell///////////
 
 const cell = new Cell("2022-12.10", ColorEnum.RED);
 console.log(cell);
